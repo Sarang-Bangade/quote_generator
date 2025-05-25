@@ -88,13 +88,51 @@ const quotes = [
   "What lies behind us and what lies before us are tiny matters compared to what lies within us. — Ralph Waldo Emerson"
 ];
 
-const generateButton = document.getElementById('generateButton')
-const quoteDisplay = document.getElementById('quoteDisplay')
-function generateQuote (){
+// const generateButton = document.getElementById('generateButton')
+// const quoteDisplay = document.getElementById('quoteDisplay')
+// function generateQuote (){
 
-    const randomIndex = Math.floor(Math.random() * quotes.length)
-    const quote = quotes[randomIndex]
-    quoteDisplay.innerText = quote
+//     const randomIndex = Math.floor(Math.random() * quotes.length)
+//     const quote = quotes[randomIndex]
+//     quoteDisplay.innerText = quote
+// }
+
+// generateButton.addEventListener('click', generateQuote)
+
+/*----------------------------------------------------------------------------------------*/
+
+/*The code that dont repeat the quotes again and again during the random occurance */
+const generateButton = document.getElementById('generateButton');
+const quoteDisplay = document.getElementById('quoteDisplay');
+
+let shuffledQuotes = [];
+let currentIndex = 0;
+
+// Shuffle quotes using Fisher-Yates algorithm
+function shuffleQuotes() {
+    shuffledQuotes = [...quotes];
+    for (let i = shuffledQuotes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledQuotes[i], shuffledQuotes[j]] = [shuffledQuotes[j], shuffledQuotes[i]];
+    }
+    currentIndex = 0;
 }
 
-generateButton.addEventListener('click', generateQuote)
+// Generate next quote
+function generateQuote() {
+    if (currentIndex === 0) shuffleQuotes(); // Shuffle at the beginning or after reset
+
+    const quote = shuffledQuotes[currentIndex];
+    quoteDisplay.classList.remove('fade-in');
+    void quoteDisplay.offsetWidth; // Restart animation
+    quoteDisplay.textContent = quote;
+    quoteDisplay.classList.add('fade-in');
+
+    currentIndex++;
+
+    if (currentIndex >= shuffledQuotes.length) {
+        currentIndex = 0;
+    }
+}
+
+generateButton.addEventListener('click', generateQuote);
